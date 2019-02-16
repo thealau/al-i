@@ -2,6 +2,7 @@
 import json
 # from df_response_lib import response_format as rf
 import flask
+from mindfulness import mindfulness,mindfulness_first
 
 app = flask.Flask(__name__)
 
@@ -14,7 +15,7 @@ def index():
 def results():
     # build a request object
     req = flask.request.get_json(force=True)
-    print(json.dumps(req, indent=4, sort_keys=True))
+    # print(json.dumps(req, indent=4, sort_keys=True))
 
     # fetch action from json
     result = req.get('queryResult')
@@ -28,6 +29,12 @@ def results():
             exercises to better equip you for the challenges life brings.'''}
         else:
             return{'fulfillmentText':'response sent from webhook'}
+
+    elif result.get('intent').get('displayName') == 'MindfulnessExercise':
+        return mindfulness(req)
+
+    elif result.get('intent').get('displayName') == 'MindfulnessExercise - fallback':
+        return mindfulness_first(req)
 
 
     # return a fulfillment response

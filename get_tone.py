@@ -20,9 +20,10 @@ def get_tone(text):
     ).get_result()
 
     if len(tone_analysis['document_tone']['tones']) == 0:
-        print('neutral')
+        return(tone_analysis['document_tone']['tones'])
+
     else:
-        print(tone_analysis['document_tone']['tones'])
+        return(tone_analysis['document_tone']['tones'])
 
     return
 
