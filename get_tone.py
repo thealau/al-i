@@ -1,10 +1,7 @@
 import json
 from watson_developer_cloud import ToneAnalyzerV3
 
-
-
-# create client
-
+# Returns a sentiment: anger, disgust, fear, joy, sadness, neutral
 def get_tone(text):
     tone_analyzer = ToneAnalyzerV3(
         version='2017-09-21',
@@ -19,13 +16,22 @@ def get_tone(text):
         False
     ).get_result()
 
-    if len(tone_analysis['document_tone']['tones']) == 0:
-        return(tone_analysis['document_tone']['tones'])
 
-    else:
-        return(tone_analysis['document_tone']['tones'])
+    # Variables for extracting predicted tone
+    mytones = tone_analysis['document_tone']['tones']
+    highest = 0
+    predict = 'neutral'
+    valid = ['anger', 'disgust', 'fear', 'joy', 'sadness']
 
-    return
+    #  Go through all identified tones
+    for tone in mytones:
 
-text = 'I am not sure what to do'
-get_tone(text)
+        cur = tone['tone_id']
+        score = tone['score']
+
+        # only report the highest tone
+        if cur in valid and score > highest:
+            highest = score
+            predict = cur
+
+    return predict
