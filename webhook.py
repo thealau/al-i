@@ -58,6 +58,10 @@ def results():
             
             return{'fulfillmentText': ''' I understand! Let's see how I can help. I know of a breathing exercise that can help reduce anxiety. If you would like to try it, say breath. '''}
 
+        else:
+            # TODO, initiate other exercises
+            return{'fulfillmentText': ''' Hmm let me think of some exercises I can help you out with '''}
+
 
     elif result.get('intent').get('displayName') == 'MindfulnessExercise':
         return mindfulness(req)
