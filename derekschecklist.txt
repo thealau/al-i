@@ -1,0 +1,16 @@
+TODO IN DIALOGFLOW:
+set up ngrok endpoint ending in /webhook
+
+RUN TO SET UP:
+pip install -r requirements.txt
+
+export FLASK_DEBUG=True
+
+export FLASK_APP=webhook
+
+
+RUN TO TEST:
+
+flask run --host 0.0.0.0 --port 5000
+
+
