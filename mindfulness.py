@@ -1,26 +1,75 @@
 from get_tone import get_tone
 
-def mindfulness(req):
-	# print (req['payload']['inputs']['rawInputs']['query'])
-	return {'fulfillmentText': '''Let's try an observation exercise. It can be hard to be present in the moment, especially when we're feeling anxious or overwhelmed with emotions. Let's try and get back to the present and tackle the issues causing our anxiety later. Can you tell me about the environment around you? Describe it in depth, even as far as telling me the colors of the walls, and the physical sensations that you're feeling in the moment.'''}
-
-def mindfulness_first(req):
+def mindfulness_followup1(req, neutral_tone_mindfulness):
+	# text = req.get('queryResult').get('parameters')   
+	# sentiment = get_tone(text['any'])
 	query = req.get('queryResult').get('queryText')
+	# Get overall tone
+	overall_tone, _ = get_tone(query)
+	# If neutral
+	print(overall_tone)
+	if overall_tone is 'neutral':
+		neutral_tone_mindfulness = True
+		return {'fulfillmentText': '''Great! How are you feeling now?'''}
 
-	# if get_tone
-	# get_tone()
-	# Get 
+	# If not neutral
+	# Get sentence with most emotion to use in Al-i response (shown in our example script)
 	sentences = query.split(".")
 	maxscore = 0
 	maxsentence = ""
 	for s in sentences:
-		tone_dict = get_tone(s)
+		tone, score = get_tone(s)
+		print(score)
 		# if not tone_dict == "neutral":
-		if tone_dict['score'] > maxscore:
-			maxscore = tone_dict['score']
+		# tODO: In the case of ties, pick the more negative tone
+		if score > maxscore:
+			maxscore = score
 			maxsentence = s
 
-
 	print(maxsentence)
+	output = '''This time, let’s describe our surroundings without any judgement, or any emotion. 
+	Describe your surroundings as they are, without communicating any feelings about it. 
+	Instead of saying ''' + maxsentence + ''', try describing just the facts, just the physical qualities of the space.'''
+
+	print(output)
 	# print(tone)
-	return {'fulfillmentText':maxsentence}
+	return {'fulfillmentText':output}
+
+
+
+def mindfulness_followup2(req, neutral_tone_mindfulness):
+	query = req.get('queryResult').get('queryText')
+	# Get overall tone
+	overall_tone, _ = get_tone(query)
+	# If neutral
+	print(overall_tone)
+	if overall_tone is 'neutral':
+		neutral_tone_mindfulness = True
+		return {'fulfillmentText': '''Great! How are you feeling now?'''}
+
+	# If not neutral
+	# Get sentence with most emotion to use in Al-i response (shown in our example script)
+	words = query.split()
+	maxscore = 0
+	maxword = ""
+	for w in words:
+		tone, score = get_tone(w)
+		print(w)
+		# if not tone_dict == "neutral":
+		# tODO: In the case of ties, pick the more negative tone
+		if score > maxscore:
+			maxscore = score
+			maxword = w
+
+	print(maxword)
+	output = '''That was better. I noticed that you’re still having feelings about ''' + maxword + '''. 
+	Sometimes our emotions can affect our perception of what’s going on around us. 
+	Let’s try one more time, but this time just describe ''' + maxword + ''' without any feeling at all. 
+	Describe physical characteristics, and facts about ''' + maxword + '''.'''
+	print(output)
+	# print(tone)
+	return {'fulfillmentText':output}
+
+def mindfulness_followup3(req, neutral_tone_mindfulness):
+	return {'fulfillmentText': '''Great! How are you feeling now?'''}
+

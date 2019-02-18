@@ -2,12 +2,13 @@
 import json
 # from df_response_lib import response_format as rf
 import flask
-from mindfulness import mindfulness,mindfulness_first
+from mindfulness import mindfulness_followup1, mindfulness_followup2, mindfulness_followup3
 from get_tone import get_tone
 
 app = flask.Flask(__name__)
 
 overall_sentiment = []
+neutral_tone_mindfulness = False
 
 # default route
 @app.route('/')
@@ -16,12 +17,16 @@ def index():
 
 # function for responses
 def results():
+    print(neutral_tone_mindfulness)
     # build a request object
     req = flask.request.get_json(force=True)
     # print(json.dumps(req, indent=4, sort_keys=True))
 
     # fetch action from json
     result = req.get('queryResult')
+    print(result)
+
+    # if result.get('intent').get('displayName') == 'Default Welcome Intent':
 
     if result.get('intent').get('displayName') == 'IntroExplanation':
         if result.get('parameters').get('response') == 'yes':
@@ -36,7 +41,7 @@ def results():
     elif result.get('intent').get('displayName') == "IntroExplanation - How Are You?":
         text = result.get('parameters')
         
-        sentiment = get_tone(text['anything'])
+        sentiment, _ = get_tone(text['anything'])
         overall_sentiment.append(sentiment)
         print("Overall Sent: ", overall_sentiment[0])
 
@@ -63,16 +68,35 @@ def results():
             # TODO, initiate other exercises
             return{'fulfillmentText': ''' Hmm let me think of some exercises I can help you out with '''}
 
+    # Mindfullness Exercise
+    # Check if outputContext list contains target Context (TODO: What if this list is empty)
+    # elif result.get('intent').get('displayName') == 'MindfulnessExercise': # and check_output_context(result, 'mindfulnessexercise-followup1'):
+    #     return mindfulness(req)
 
-    elif result.get('intent').get('displayName') == 'MindfulnessExercise':
-        return mindfulness(req)
+    # print(result.get('intent').get('displayName'))
+    elif result.get('intent').get('displayName') == 'MindfulnessExercise - followup' and not neutral_tone_mindfulness:#and check_output_context(result, 'mindfulnessexercise-followup2'):
+        return mindfulness_followup1(req, neutral_tone_mindfulness)
 
-    elif result.get('intent').get('displayName') == 'MindfulnessExercise - fallback':
-        return mindfulness_first(req)
+    elif result.get('intent').get('displayName') == 'MindfulnessExercise - followup2' and not neutral_tone_mindfulness:#and check_output_context(result, 'mindfulnessexercise-followup2'):
+        return mindfulness_followup2(req, neutral_tone_mindfulness)
 
+    elif result.get('intent').get('displayName') == 'MindfulnessExercise - followup3' and not neutral_tone_mindfulness:#and check_output_context(result, 'mindfulnessexercise-followup2'):
+       return mindfulness_followup3(req, neutral_tone_mindfulness)
+
+    # elif result.get('intent').get('displayName') == 'MindfulnessExercise - fallback':
+    #     return mindfulness_first(req)
 
     # return a fulfillment response
-    return {'fulfillmentText': '''Hello, I'm Al-i! I'm so happy to meet you! My mission is to support you in your journey towards adopting mindfulness and a more positive outlook for better overall mental well being. Before we begin, would you like to know how I work, and how I can help?'''}
+    return {'fulfillmentText': '''Ok, that's all for today. It was great talking to you and hearing about how you are doing!'''}
+
+def check_output_context(result, output_context):
+    output_contexts = result.get('outputContexts')
+    # loop through dicts to find target output context
+    for output_context_dict in output_contexts:
+        if output_context in output_context_dict['name']:
+            return True
+    return False
+
 
 # create a route for webhook
 @app.route('/webhook', methods=['GET', 'POST'])
