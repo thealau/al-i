@@ -45,6 +45,7 @@ def results():
         
         sentiment, _ = get_tone(text['anything'])
         overall_sentiment.append(sentiment)
+        print("Overall Sent: ", overall_sentiment[0])
 
         if sentiment == 'joy':
 
@@ -63,7 +64,7 @@ def results():
         
         elif overall_sentiment[0] == 'anger' or overall_sentiment[0] == 'sadness' or overall_sentiment[0] == 'disgust':
             
-            return{'fulfillmentText': ''' I understand! Let's see how I can help. I know of a breathing exercise that can help reduce anxiety. If you would like to try it, say breath. '''}
+            return{'fulfillmentText': ''' I understand! Let's see how I can help. I know of a breathing exercise that can help reduce anxiety. If you would like to try it, say breathe. '''}
 
         else:
             # TODO, initiate other exercises
