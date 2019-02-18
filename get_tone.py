@@ -34,4 +34,4 @@ def get_tone(text):
             highest = score
             predict = cur
 
-    return predict
+    return predict, highest
