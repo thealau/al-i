@@ -8,7 +8,8 @@ from get_tone import get_tone
 app = flask.Flask(__name__)
 
 overall_sentiment = []
-neutral_tone_mindfulness = False
+# TODO: change this solution  
+neutral_tone_mindfulness = [False]
 
 # default route
 @app.route('/')
@@ -18,6 +19,7 @@ def index():
 # function for responses
 def results():
     print(neutral_tone_mindfulness)
+    print(overall_sentiment)
     # build a request object
     req = flask.request.get_json(force=True)
     # print(json.dumps(req, indent=4, sort_keys=True))
@@ -73,20 +75,25 @@ def results():
     #     return mindfulness(req)
 
     # print(result.get('intent').get('displayName'))
-    elif result.get('intent').get('displayName') == 'MindfulnessExercise - followup' and not neutral_tone_mindfulness:#and check_output_context(result, 'mindfulnessexercise-followup2'):
-        return mindfulness_followup1(req, neutral_tone_mindfulness)
+    elif result.get('intent').get('displayName') == 'MindfulnessExercise - followup' and not neutral_tone_mindfulness[0]:#and check_output_context(result, 'mindfulnessexercise-followup2'):
+        fulfillmentText, neutral_tone_mindfulness[0] = mindfulness_followup1(req)
+        # neutral_tone_mindfulness = neutral_tone_mindful
+        return fulfillmentText
 
-    elif result.get('intent').get('displayName') == 'MindfulnessExercise - followup2' and not neutral_tone_mindfulness:#and check_output_context(result, 'mindfulnessexercise-followup2'):
-        return mindfulness_followup2(req, neutral_tone_mindfulness)
+    elif result.get('intent').get('displayName') == 'MindfulnessExercise - followup2' and not neutral_tone_mindfulness[0]:#and check_output_context(result, 'mindfulnessexercise-followup2'):
+        fulfillmentText, neutral_tone_mindfulness[0] = mindfulness_followup2(req)
+        # neutral_tone_mindfulness = neutral_tone_mindful
+        return fulfillmentText
 
-    elif result.get('intent').get('displayName') == 'MindfulnessExercise - followup3' and not neutral_tone_mindfulness:#and check_output_context(result, 'mindfulnessexercise-followup2'):
-       return mindfulness_followup3(req, neutral_tone_mindfulness)
-
+    elif result.get('intent').get('displayName') == 'MindfulnessExercise - followup3' and not neutral_tone_mindfulness[0]:#and check_output_context(result, 'mindfulnessexercise-followup2'):
+        fulfillmentText, neutral_tone_mindfulness[0] = mindfulness_followup3(req)
+        # neutral_tone_mindfulness = neutral_tone_mindful
+        return fulfillmentText
     # elif result.get('intent').get('displayName') == 'MindfulnessExercise - fallback':
     #     return mindfulness_first(req)
 
     # return a fulfillment response
-    return {'fulfillmentText': '''Ok, that's all for today. It was great talking to you and hearing about how you are doing!'''}
+    return {'fulfillmentText': '''Okay, that's all for today. It was great talking to you and hearing about how you are doing!'''}
 
 def check_output_context(result, output_context):
     output_contexts = result.get('outputContexts')

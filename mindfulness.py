@@ -1,6 +1,6 @@
 from get_tone import get_tone
 
-def mindfulness_followup1(req, neutral_tone_mindfulness):
+def mindfulness_followup1(req):
 	# text = req.get('queryResult').get('parameters')   
 	# sentiment = get_tone(text['any'])
 	query = req.get('queryResult').get('queryText')
@@ -9,8 +9,7 @@ def mindfulness_followup1(req, neutral_tone_mindfulness):
 	# If neutral
 	print(overall_tone)
 	if overall_tone is 'neutral':
-		neutral_tone_mindfulness = True
-		return {'fulfillmentText': '''Great! How are you feeling now?'''}
+		return {'fulfillmentText': '''Great! How are you feeling now?'''}, True
 
 	# If not neutral
 	# Get sentence with most emotion to use in Al-i response (shown in our example script)
@@ -33,19 +32,18 @@ def mindfulness_followup1(req, neutral_tone_mindfulness):
 
 	print(output)
 	# print(tone)
-	return {'fulfillmentText':output}
+	return {'fulfillmentText':output}, False
 
 
 
-def mindfulness_followup2(req, neutral_tone_mindfulness):
+def mindfulness_followup2(req):
 	query = req.get('queryResult').get('queryText')
 	# Get overall tone
 	overall_tone, _ = get_tone(query)
 	# If neutral
 	print(overall_tone)
 	if overall_tone is 'neutral':
-		neutral_tone_mindfulness = True
-		return {'fulfillmentText': '''Great! How are you feeling now?'''}
+		return {'fulfillmentText': '''Great! How are you feeling now?'''}, True
 
 	# If not neutral
 	# Get sentence with most emotion to use in Al-i response (shown in our example script)
@@ -68,8 +66,8 @@ def mindfulness_followup2(req, neutral_tone_mindfulness):
 	Describe physical characteristics, and facts about ''' + maxword + '''.'''
 	print(output)
 	# print(tone)
-	return {'fulfillmentText':output}
+	return {'fulfillmentText':output}, False
 
-def mindfulness_followup3(req, neutral_tone_mindfulness):
-	return {'fulfillmentText': '''Great! How are you feeling now?'''}
+def mindfulness_followup3(req):
+	return {'fulfillmentText': '''Great! How are you feeling now?'''}, True
 
