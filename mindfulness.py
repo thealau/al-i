@@ -26,7 +26,7 @@ def mindfulness_followup1(req):
 			maxsentence = s
 
 	print(maxsentence)
-	output = '''This time, let’s describe our surroundings without any judgement, or any emotion. 
+	output = '''This time, let's describe our surroundings without any judgement, or any emotion. 
 	Describe your surroundings as they are, without communicating any feelings about it. 
 	Instead of saying ''' + maxsentence + ''', try describing just the facts, just the physical qualities of the space.'''
 
@@ -60,9 +60,9 @@ def mindfulness_followup2(req):
 			maxword = w
 
 	print(maxword)
-	output = '''That was better. I noticed that you’re still having feelings about ''' + maxword + '''. 
+	output = '''That was better. I noticed that you're still having feelings about ''' + maxword + '''. 
 	Sometimes our emotions can affect our perception of what’s going on around us. 
-	Let’s try one more time, but this time just describe ''' + maxword + ''' without any feeling at all. 
+	Let's try one more time, but this time just describe ''' + maxword + ''' without any feeling at all. 
 	Describe physical characteristics, and facts about ''' + maxword + '''.'''
 	print(output)
 	# print(tone)
