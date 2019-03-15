@@ -1,6 +1,4 @@
-# import flask dependencies
 import json
-# from df_response_lib import response_format as rf
 import flask
 from mindfulness import mindfulness_followup1, mindfulness_followup2, mindfulness_followup3
 from get_tone import get_tone
@@ -21,26 +19,27 @@ def results():
     print(neutral_tone_mindfulness)
     print(overall_sentiment)
     # build a request object
-    req = flask.request.get_json(force=True)
+    result = flask.request.get_json(force=True)
     # print(json.dumps(req, indent=4, sort_keys=True))
+    print(result)
 
     # fetch action from json
-    result = req.get('queryResult')
+    req = result.get('query')
     print(result)
 
     # if result.get('intent').get('displayName') == 'Default Welcome Intent':
-
-    if result.get('intent').get('displayName') == 'IntroExplanation':
+    print(result.get('state'))
+    if result.get('state') == 'IntroExplanation':
         if result.get('parameters').get('response') == 'yes':
-            return {'fulfillmentText': '''My name is Al-i, and I am just that,
+            return {'query': '''My name is Al-i, and I am just that,
             your ally! My purpose is to be here for you without judgement.
             I've been trained to identify exactly how you're feeling, and to
             provide for you, and guide you through, a select set of targeted
             exercises to better equip you for the challenges life brings. Let's get started! Tell me, how are you doing today'''}
         else:
-            return{'fulfillmentText':'''Okay, let's get started! Tell me, how are you doing today?'''}
+            return{'query':'''Okay, let's get started! Tell me, how are you doing today?'''}
 
-    elif result.get('intent').get('displayName') == "IntroExplanation - How Are You?":
+    elif result.get('state') == "IntroExplanation - How Are You?":
         text = result.get('parameters')
         
         sentiment, _ = get_tone(text['anything'])
@@ -49,52 +48,50 @@ def results():
 
         if sentiment == 'joy':
 
-            return {'fulfillmentText': ''' I'm glad to hear that! What has been good about your day? '''}
+            return {'query': ''' I'm glad to hear that! What has been good about your day? '''}
         elif sentiment == 'neutral':
 
-            return {'fulfillmentText': ''' Thanks for sharing! '''}
+            return {'query': ''' Thanks for sharing! '''}
 
         else:
-            return {'fulfillmentText': ''' I'm sorry to hear that, would you like to talk about what's going on? '''}
+            return {'query': ''' I'm sorry to hear that, would you like to talk about what's going on? '''}
     
-    elif result.get('intent').get('displayName') == "IntroExplanation - How Are You? - followup":
+    elif result.get('state') == "IntroExplanation - How Are You? - followup":
         if result.get('parameters').get('response') == 'yes':
 
-            return{'fulfillmentText': ''' Thanks for being open with me! I'm all ears. '''}
+            return{'query': ''' Thanks for being open with me! I'm all ears. '''}
         
         elif overall_sentiment[0] == 'anger' or overall_sentiment[0] == 'sadness' or overall_sentiment[0] == 'disgust':
             
-            return{'fulfillmentText': ''' I understand! Let's see how I can help. I know of a breathing exercise that can help reduce anxiety. If you would like to try it, say breathe. '''}
+            return{'query': ''' I understand! Let's see how I can help. I know of a breathing exercise that can help reduce anxiety. If you would like to try it, say breathe. '''}
 
         else:
             # TODO, initiate other exercises
-            return{'fulfillmentText': ''' Hmm let me think of some exercises I can help you out with '''}
+            return{'query': ''' Hmm let me think of some exercises I can help you out with '''}
 
-    # Mindfullness Exercise
-    # Check if outputContext list contains target Context (TODO: What if this list is empty)
-    # elif result.get('intent').get('displayName') == 'MindfulnessExercise': # and check_output_context(result, 'mindfulnessexercise-followup1'):
-    #     return mindfulness(req)
+    # MINDFULNESS EXERCISE
+    elif result.get('state') == 'mindfulness':
+        print('hello')
+        return{'query': '''Let’s try an observation exercise. It can be hard to be present in the moment, \
+        especially when we’re feeling anxious or overwhelmed with emotions. Let’s try and get \
+        back to the present and tackle the issues causing our anxiety later. Can you tell me \
+        about the environment around you? Describe it in depth, even as far as telling me \
+        the colors of the walls, and the physical sensations that you’re feeling in the moment.'''}
 
-    # print(result.get('intent').get('displayName'))
-    elif result.get('intent').get('displayName') == 'MindfulnessExercise - followup' and not neutral_tone_mindfulness[0]:#and check_output_context(result, 'mindfulnessexercise-followup2'):
-        fulfillmentText, neutral_tone_mindfulness[0] = mindfulness_followup1(req)
-        # neutral_tone_mindfulness = neutral_tone_mindful
-        return fulfillmentText
+    elif result.get('state') == 'mindfulness_followup1' and not neutral_tone_mindfulness[0]:
+        query, neutral_tone_mindfulness[0] = mindfulness_followup1(req)
+        return query
 
-    elif result.get('intent').get('displayName') == 'MindfulnessExercise - followup2' and not neutral_tone_mindfulness[0]:#and check_output_context(result, 'mindfulnessexercise-followup2'):
-        fulfillmentText, neutral_tone_mindfulness[0] = mindfulness_followup2(req)
-        # neutral_tone_mindfulness = neutral_tone_mindful
-        return fulfillmentText
+    elif result.get('state') == 'mindfulness_followup2' and not neutral_tone_mindfulness[0]:
+        query, neutral_tone_mindfulness[0] = mindfulness_followup2(req)
+        return query
 
-    elif result.get('intent').get('displayName') == 'MindfulnessExercise - followup3' and not neutral_tone_mindfulness[0]:#and check_output_context(result, 'mindfulnessexercise-followup2'):
-        fulfillmentText, neutral_tone_mindfulness[0] = mindfulness_followup3(req)
-        # neutral_tone_mindfulness = neutral_tone_mindful
-        return fulfillmentText
-    # elif result.get('intent').get('displayName') == 'MindfulnessExercise - fallback':
-    #     return mindfulness_first(req)
+    elif result.get('state') == 'mindfulness_followup3' and not neutral_tone_mindfulness[0]:
+        query, neutral_tone_mindfulness[0] = mindfulness_followup3(req)
+        return query
 
     # return a fulfillment response
-    return {'fulfillmentText': '''Okay, that's all for today. It was great talking to you and hearing about how you are doing!'''}
+    return {'query': '''Okay, that's all for today. It was great talking to you and hearing about how you are doing!'''}
 
 def check_output_context(result, output_context):
     output_contexts = result.get('outputContexts')

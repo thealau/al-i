@@ -3,13 +3,13 @@ from get_tone import get_tone
 def mindfulness_followup1(req):
 	# text = req.get('queryResult').get('parameters')   
 	# sentiment = get_tone(text['any'])
-	query = req.get('queryResult').get('queryText')
+	query = req
 	# Get overall tone
 	overall_tone, _ = get_tone(query)
 	# If neutral
 	print(overall_tone)
 	if overall_tone is 'neutral':
-		return {'fulfillmentText': '''Great! How are you feeling now?'''}, True
+		return {'query': '''Great! How are you feeling now?'''}, True
 
 	# If not neutral
 	# Get sentence with most emotion to use in Al-i response (shown in our example script)
@@ -32,18 +32,18 @@ def mindfulness_followup1(req):
 
 	print(output)
 	# print(tone)
-	return {'fulfillmentText':output}, False
+	return {'query':output}, False
 
 
 
 def mindfulness_followup2(req):
-	query = req.get('queryResult').get('queryText')
+	query = req
 	# Get overall tone
 	overall_tone, _ = get_tone(query)
 	# If neutral
 	print(overall_tone)
 	if overall_tone is 'neutral':
-		return {'fulfillmentText': '''Great! How are you feeling now?'''}, True
+		return {'query': '''Great! How are you feeling now?'''}, True
 
 	# If not neutral
 	# Get sentence with most emotion to use in Al-i response (shown in our example script)
@@ -66,8 +66,8 @@ def mindfulness_followup2(req):
 	Describe physical characteristics, and facts about ''' + maxword + '''.'''
 	print(output)
 	# print(tone)
-	return {'fulfillmentText':output}, False
+	return {'query':output}, False
 
 def mindfulness_followup3(req):
-	return {'fulfillmentText': '''Great! How are you feeling now?'''}, True
+	return {'query': '''Great! How are you feeling now?'''}, True
 

@@ -1,0 +1,12 @@
+**** clinc_webhook information ****
+
+Setting up webhook
+1.Activate virtual environment 
+2.Setup flask server using following commands:
+    a.pip install -r requirements.txt
+    b.export FLASK_DEBUG=True
+    c.export FLASK_APP=webhook
+    d.flask run --host 0.0.0.0 --port 5000
+3.Setup ngrok server using "ngrok http <port_number>""
+4.In clinc site, navigate to user settings in top right corner, and paste "<ngrok_server_url>/webhook" into webhook url
+
