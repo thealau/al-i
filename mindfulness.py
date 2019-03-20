@@ -61,7 +61,7 @@ def mindfulness_followup2(req):
 
 	print(maxword)
 	output = '''That was better. I noticed that you're still having feelings about ''' + maxword + '''. 
-	Sometimes our emotions can affect our perception of what’s going on around us. 
+	Sometimes our emotions can affect our perception of what's going on around us. 
 	Let's try one more time, but this time just describe ''' + maxword + ''' without any feeling at all. 
 	Describe physical characteristics, and facts about ''' + maxword + '''.'''
 	print(output)
