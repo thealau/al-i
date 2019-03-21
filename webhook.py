@@ -6,6 +6,9 @@ from get_tone import get_tone
 app = flask.Flask(__name__)
 
 overall_sentiment = []
+
+mode = "greeting"
+
 # TODO: change this solution  
 neutral_tone_mindfulness = [False]
 
@@ -21,6 +24,8 @@ def results():
     # build a request object
     req = flask.request.get_json(force=True)
 
+    # set mode to either greeting, inquire, exercise, post_exercise 
+    
     # build response object
     clinc_resp = req
 
@@ -35,20 +40,40 @@ def results():
     # print state request came from
     print(req.get('state'))
 
-    response = None
+    response = "hello world"
 
-    if req.get('state') == 'sentiment_gathering':
-        query = "what"
+    if req.get('state') == 'sentiment_gathering' and mode == "greeting":
+        sentiment, _ = get_tone(utterance)
+
+        overall_sentiment.append(sentiment)
+
+        if sentiment == 'joy':
+
+            response = '''Of course, let's chat! Tell me, how are you doing today?'''
+
+        elif sentiment == 'neutral':
+
+            response = '''I'm all ears. What's been going on?'''
+
+        else:
+
+            response = '''I'm sorry to hear that. What's been going on?'''
+
+        mode = "inquire"
+
+    elif req.get('state') == 'sentiment_gathering' and mode == "inquire":
+
+        sentiment, _ = get_tone(utterance)
 
     elif req.get('state') == 'IntroExplanation':
         if result.get('parameters').get('response') == 'yes':
-            query = '''My name is Al-i, and I am just that,
+            response = '''My name is Al-i, and I am just that,
             your ally! My purpose is to be here for you without judgement.
             I've been trained to identify exactly how you're feeling, and to
             provide for you, and guide you through, a select set of targeted
             exercises to better equip you for the challenges life brings. Let's get started! Tell me, how are you doing today'''
         else:
-            query = '''Okay, let's get started! Tell me, how are you doing today?'''
+            response = '''Okay, let's get started! Tell me, how are you doing today?'''
 
     elif req.get('state') == "IntroExplanation - How Are You?":
         text = result.get('parameters')
@@ -103,9 +128,9 @@ def results():
     
     
     # check state
-    clinc_resp['slots']['test'] = {"type": "list", "values": []}
+    clinc_resp['slots']['_TEST_'] = {"type": "string", "values": []}
 
-    clinc_resp['slots']['test']['values'].append({"tokens": "test", "resolved": 1, "value": "hello world"})
+    clinc_resp['slots']['_TEST_']['values'].append({"tokens": "test", "resolved": 1, "value": response})
 
     print("webhook successful")
 
