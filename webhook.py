@@ -36,8 +36,8 @@ def results():
     resp['state'] = "breathing"
 
     # check state
-    if result.get('state') == 'IntroExplanation':
-        if result.get('parameters').get('response') == 'yes':
+    if req.get('state') == 'IntroExplanation':
+        if req.get('parameters').get('response') == 'yes':
             query = '''My name is Al-i, and I am just that,
             your ally! My purpose is to be here for you without judgement.
             I've been trained to identify exactly how you're feeling, and to
@@ -46,8 +46,8 @@ def results():
         else:
             query = '''Okay, let's get started! Tell me, how are you doing today?'''
 
-    elif result.get('state') == "IntroExplanation - How Are You?":
-        text = result.get('parameters')
+    elif req.get('state') == "IntroExplanation - How Are You?":
+        text = req.get('parameters')
         
         sentiment, _ = get_tone(text['anything'])
         overall_sentiment.append(sentiment)
@@ -63,8 +63,8 @@ def results():
         else:
             query = ''' I'm sorry to hear that, would you like to talk about what's going on? '''
     
-    elif result.get('state') == "IntroExplanation - How Are You? - followup":
-        if result.get('parameters').get('response') == 'yes':
+    elif req.get('state') == "IntroExplanation - How Are You? - followup":
+        if req.get('parameters').get('response') == 'yes':
 
             query = ''' Thanks for being open with me! I'm all ears. '''
         
@@ -77,7 +77,7 @@ def results():
             query = ''' Hmm let me think of some exercises I can help you out with '''
 
     # MINDFULNESS EXERCISE
-    elif result.get('state') == 'mindfulness':
+    elif req.get('state') == 'mindfulness':
         print('hello')
         query = '''Let's try an observation exercise. It can be hard to be present in the moment, \
         especially when we're feeling anxious or overwhelmed with emotions. Let's try and get \
@@ -85,15 +85,15 @@ def results():
         about the environment around you? Describe it in depth, even as far as telling me \
         the colors of the walls, and the physical sensations that you're feeling in the moment.'''
 
-    elif result.get('state') == 'mindfulness_followup1' and not neutral_tone_mindfulness[0]:
+    elif req.get('state') == 'mindfulness_followup1' and not neutral_tone_mindfulness[0]:
         query, neutral_tone_mindfulness[0] = mindfulness_followup1(req)
         
 
-    elif result.get('state') == 'mindfulness_followup2' and not neutral_tone_mindfulness[0]:
+    elif req.get('state') == 'mindfulness_followup2' and not neutral_tone_mindfulness[0]:
         query, neutral_tone_mindfulness[0] = mindfulness_followup2(req)
         
 
-    elif result.get('state') == 'mindfulness_followup3' and not neutral_tone_mindfulness[0]:
+    elif req.get('state') == 'mindfulness_followup3' and not neutral_tone_mindfulness[0]:
         query, neutral_tone_mindfulness[0] = mindfulness_followup3(req)
         
 
