@@ -22,7 +22,7 @@ def results():
     req = flask.request.get_json(force=True)
 
     # build response object
-    resp = req
+    clinc_resp = req
 
     # print out request
     print(req)
@@ -30,14 +30,18 @@ def results():
     # print query from request
     print(req.get('query'))
 
+    utterance = req.get('query')
+
     # print state request came from
     print(req.get('state'))
-    
-    resp['state'] = "breathing"
 
-    # check state
-    if req.get('state') == 'IntroExplanation':
-        if req.get('parameters').get('response') == 'yes':
+    response = None
+
+    if req.get('state') == 'sentiment_gathering':
+        query = "what"
+
+    elif req.get('state') == 'IntroExplanation':
+        if result.get('parameters').get('response') == 'yes':
             query = '''My name is Al-i, and I am just that,
             your ally! My purpose is to be here for you without judgement.
             I've been trained to identify exactly how you're feeling, and to
@@ -47,8 +51,8 @@ def results():
             query = '''Okay, let's get started! Tell me, how are you doing today?'''
 
     elif req.get('state') == "IntroExplanation - How Are You?":
-        text = req.get('parameters')
-        
+        text = result.get('parameters')
+
         sentiment, _ = get_tone(text['anything'])
         overall_sentiment.append(sentiment)
         print("Overall Sent: ", overall_sentiment[0])
@@ -62,12 +66,12 @@ def results():
 
         else:
             query = ''' I'm sorry to hear that, would you like to talk about what's going on? '''
-    
+
     elif req.get('state') == "IntroExplanation - How Are You? - followup":
-        if req.get('parameters').get('response') == 'yes':
+        if result.get('parameters').get('response') == 'yes':
 
             query = ''' Thanks for being open with me! I'm all ears. '''
-        
+
         elif overall_sentiment[0] == 'anger' or overall_sentiment[0] == 'sadness' or overall_sentiment[0] == 'disgust':
             
             query = ''' I understand! Let's see how I can help. I know of a breathing exercise that can help reduce anxiety. If you would like to try it, say breathe. '''
@@ -76,7 +80,7 @@ def results():
             # TODO, initiate other exercises
             query = ''' Hmm let me think of some exercises I can help you out with '''
 
-    # MINDFULNESS EXERCISE
+        # MINDFULNESS EXERCISE
     elif req.get('state') == 'mindfulness':
         print('hello')
         query = '''Let's try an observation exercise. It can be hard to be present in the moment, \
@@ -87,18 +91,25 @@ def results():
 
     elif req.get('state') == 'mindfulness_followup1' and not neutral_tone_mindfulness[0]:
         query, neutral_tone_mindfulness[0] = mindfulness_followup1(req)
-        
 
     elif req.get('state') == 'mindfulness_followup2' and not neutral_tone_mindfulness[0]:
         query, neutral_tone_mindfulness[0] = mindfulness_followup2(req)
-        
 
     elif req.get('state') == 'mindfulness_followup3' and not neutral_tone_mindfulness[0]:
         query, neutral_tone_mindfulness[0] = mindfulness_followup3(req)
-        
+
+    
+    
+    # check state
+    clinc_resp['slots']['test'] = {"type": "list", "values": []}
+
+    clinc_resp['slots']['test']['values'].append({"tokens": "test", "resolved": 1, "value": "hello world"})
 
     print("webhook successful")
-    return resp
+
+
+
+    return clinc_resp
     
 
 def check_output_context(result, output_context):
