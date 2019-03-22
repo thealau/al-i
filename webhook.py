@@ -81,7 +81,7 @@ def results():
             response = "Hmm I see. I know something that might help if you are feeling stressed. Let's try a breathing exercise"
             
             # transition to breathing state
-            clinc_resp['state'] = 'breathing'
+            clinc_resp['state'] = "breathing"
 
         elif sentiment == 'disgust' or sentiment == 'sadness':
 
@@ -162,6 +162,7 @@ def results():
 
     clinc_resp['slots']['_TEST_']['values'].append({"tokens": "test", "resolved": 1, "value": response})
 
+    print(clinc_resp)
     print("webhook successful")
 
 
