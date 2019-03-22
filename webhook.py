@@ -6,6 +6,10 @@ from get_tone import get_tone
 app = flask.Flask(__name__)
 
 overall_sentiment = []
+
+# TODO m stands for mode, code breaks if we try to make m not a list for some reason
+m = []
+
 # TODO: change this solution  
 neutral_tone_mindfulness = [False]
 
@@ -21,6 +25,8 @@ def results():
     # build a request object
     req = flask.request.get_json(force=True)
 
+    # set mode to either greeting, inquire, exercise, post_exercise 
+    
     # build response object
     clinc_resp = req
 
@@ -35,20 +41,69 @@ def results():
     # print state request came from
     print(req.get('state'))
 
-    response = None
+    response = "hello world"
 
-    if req.get('state') == 'sentiment_gathering':
-        query = "what"
+    if req.get('state') == 'sentiment_gathering' and len(m) == 0:
+
+        # get sentiment and record it
+        sentiment, _ = get_tone(utterance)
+        overall_sentiment.append(sentiment)
+
+        # do action based on sentiment
+        if sentiment == 'joy':
+
+            response = '''Of course, let's chat! Tell me, how are you doing today?'''
+
+        elif sentiment == 'neutral':
+
+            response = '''I'm all ears. What's been going on?'''
+
+        else:
+            response = '''I'm sorry to hear that. What's been going on?'''
+
+        # set mode
+        m.append(1)
+
+    elif req.get('state') == 'sentiment_gathering' and len(m) == 1:
+
+        # get sentiment and record it
+        sentiment, _ = get_tone(utterance)
+        overall_sentiment.append(sentiment)
+
+
+        # do action based on sentiment
+        if sentiment == 'joy':
+
+            response = "That's great to hear!"
+
+        elif sentiment == 'anger' or sentiment == 'anxiety':
+
+            response = "Hmm I see. I know something that might help if you are feeling stressed. Let's try a breathing exercise"
+            
+            # transition to breathing state
+            clinc_resp['state'] = "breathing"
+
+        elif sentiment == 'disgust' or sentiment == 'sadness':
+
+            # transition to mindfulness exercise
+            clinc_resp['state'] = 'mindfulness'
+
+        else:
+
+            # I don't know what to say when given neutral response
+            response = "Execute order 66"
+
+        # set mode
 
     elif req.get('state') == 'IntroExplanation':
         if result.get('parameters').get('response') == 'yes':
-            query = '''My name is Al-i, and I am just that,
+            response = '''My name is Al-i, and I am just that,
             your ally! My purpose is to be here for you without judgement.
             I've been trained to identify exactly how you're feeling, and to
             provide for you, and guide you through, a select set of targeted
             exercises to better equip you for the challenges life brings. Let's get started! Tell me, how are you doing today'''
         else:
-            query = '''Okay, let's get started! Tell me, how are you doing today?'''
+            response = '''Okay, let's get started! Tell me, how are you doing today?'''
 
     elif req.get('state') == "IntroExplanation - How Are You?":
         text = result.get('parameters')
@@ -70,20 +125,20 @@ def results():
     elif req.get('state') == "IntroExplanation - How Are You? - followup":
         if result.get('parameters').get('response') == 'yes':
 
-            query = ''' Thanks for being open with me! I'm all ears. '''
+            response = ''' Thanks for being open with me! I'm all ears. '''
 
         elif overall_sentiment[0] == 'anger' or overall_sentiment[0] == 'sadness' or overall_sentiment[0] == 'disgust':
             
-            query = ''' I understand! Let's see how I can help. I know of a breathing exercise that can help reduce anxiety. If you would like to try it, say breathe. '''
+            response = ''' I understand! Let's see how I can help. I know of a breathing exercise that can help reduce anxiety. If you would like to try it, say breathe. '''
 
         else:
             # TODO, initiate other exercises
-            query = ''' Hmm let me think of some exercises I can help you out with '''
+            response = ''' Hmm let me think of some exercises I can help you out with '''
 
         # MINDFULNESS EXERCISE
     elif req.get('state') == 'mindfulness':
         print('hello')
-        query = '''Let's try an observation exercise. It can be hard to be present in the moment, \
+        response = '''Let's try an observation exercise. It can be hard to be present in the moment, \
         especially when we're feeling anxious or overwhelmed with emotions. Let's try and get \
         back to the present and tackle the issues causing our anxiety later. Can you tell me \
         about the environment around you? Describe it in depth, even as far as telling me \
@@ -101,10 +156,11 @@ def results():
     
     
     # check state
-    clinc_resp['slots']['test'] = {"type": "list", "values": []}
+    clinc_resp['slots']['_TEST_'] = {"type": "string", "values": []}
 
-    clinc_resp['slots']['test']['values'].append({"tokens": "test", "resolved": 1, "value": "hello world"})
+    clinc_resp['slots']['_TEST_']['values'].append({"tokens": "test", "resolved": 1, "value": response})
 
+    print(clinc_resp)
     print("webhook successful")
 
 

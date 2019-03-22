@@ -35,3 +35,27 @@ def get_tone(text):
             predict = cur
 
     return predict, highest
+
+
+def get_complex_tone(text):
+    tone_analyzer = ToneAnalyzerV3(
+        version='2017-09-21',
+        iam_apikey='Lp6lyTak20TWGCNTXyG2pAbzBPNLV5dERhclC439s3f9',
+        url='https://gateway.watsonplatform.net/tone-analyzer/api'
+        
+    )
+
+    tone_analysis = tone_analyzer.tone(
+        {'text': text},
+        'application/json',
+        False
+    ).get_result()
+
+    mytones = tone_analysis['document_tone']['tones']
+
+    analysis = {}
+    
+    for tone in mytones:
+        analysis[tone['tone_id']] = tone['score']
+
+    return analysis
