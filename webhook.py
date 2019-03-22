@@ -94,6 +94,7 @@ def results():
             response = "Execute order 66"
 
         # set mode
+        m.pop()
 
     elif req.get('state') == 'IntroExplanation':
         if result.get('parameters').get('response') == 'yes':
@@ -155,8 +156,7 @@ def results():
     elif req.get('state') == 'mindfulness_followup3' and not neutral_tone_mindfulness[0]:
         query, neutral_tone_mindfulness[0] = mindfulness_followup3(req)
 
-    
-    
+
     # check state
     clinc_resp['slots']['_TEST_'] = {"type": "string", "values": []}
 
