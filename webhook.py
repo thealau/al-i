@@ -97,7 +97,7 @@ def results():
         m.pop()
 
     elif req.get('state') == 'IntroExplanation':
-        if result.get('parameters').get('response') == 'yes':
+        if req.get('parameters').get('response') == 'yes':
             response = '''My name is Al-i, and I am just that,
             your ally! My purpose is to be here for you without judgement.
             I've been trained to identify exactly how you're feeling, and to
@@ -107,7 +107,7 @@ def results():
             response = '''Okay, let's get started! Tell me, how are you doing today?'''
 
     elif req.get('state') == "IntroExplanation - How Are You?":
-        text = result.get('parameters')
+        text = req.get('parameters')
 
         sentiment, _ = get_tone(text['anything'])
         overall_sentiment.append(sentiment)
@@ -124,7 +124,7 @@ def results():
             query = ''' I'm sorry to hear that, would you like to talk about what's going on? '''
 
     elif req.get('state') == "IntroExplanation - How Are You? - followup":
-        if result.get('parameters').get('response') == 'yes':
+        if req.get('parameters').get('response') == 'yes':
 
             response = ''' Thanks for being open with me! I'm all ears. '''
 
@@ -169,7 +169,7 @@ def results():
     
 
 def check_output_context(result, output_context):
-    output_contexts = result.get('outputContexts')
+    output_contexts = req.get('outputContexts')
     # loop through dicts to find target output context
     for output_context_dict in output_contexts:
         if output_context in output_context_dict['name']:
