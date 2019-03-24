@@ -9,7 +9,7 @@ def mindfulness_followup1(req):
 	# If neutral
 	print(overall_tone)
 	if overall_tone is 'neutral':
-		return {'query': '''Great! How are you feeling now?'''}, True
+		return '''Great! How are you feeling now?''', True
 
 	# If not neutral
 	# Get sentence with most emotion to use in Al-i response (shown in our example script)
@@ -32,7 +32,7 @@ def mindfulness_followup1(req):
 
 	print(output)
 	# print(tone)
-	return {'query':output}, False
+	return output, False
 
 
 
@@ -43,7 +43,7 @@ def mindfulness_followup2(req):
 	# If neutral
 	print(overall_tone)
 	if overall_tone is 'neutral':
-		return {'query': '''Great! How are you feeling now?'''}, True
+		return '''Great! How are you feeling now?''', True
 
 	# If not neutral
 	# Get sentence with most emotion to use in Al-i response (shown in our example script)
@@ -66,7 +66,7 @@ def mindfulness_followup2(req):
 	Describe physical characteristics, and facts about ''' + maxword + '''.'''
 	print(output)
 	# print(tone)
-	return {'query':output}, False
+	return output, False
 
 def mindfulness_followup3(req):
 	return {'query': '''Great! How are you feeling now?'''}, True

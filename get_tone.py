@@ -21,7 +21,7 @@ def get_tone(text):
     mytones = tone_analysis['document_tone']['tones']
     highest = 0
     predict = 'neutral'
-    valid = ['anger', 'disgust', 'fear', 'joy', 'sadness']
+    valid = ['anger', 'fear', 'joy', 'sadness']
 
     #  Go through all identified tones
     for tone in mytones:
@@ -59,3 +59,5 @@ def get_complex_tone(text):
         analysis[tone['tone_id']] = tone['score']
 
     return analysis
+
+
