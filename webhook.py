@@ -7,6 +7,8 @@ app = flask.Flask(__name__)
 
 overall_sentiment = []
 
+response = "hello world"
+
 # TODO m stands for mode, code breaks if we try to make m not a list for some reason
 m = []
 
