@@ -1,11 +1,12 @@
 import json
 import flask
 from mindfulness import mindfulness_followup1, mindfulness_followup2, mindfulness_followup3
-from get_tone import get_tone
+from get_tone import get_tone, get_complex_tone
 
 app = flask.Flask(__name__)
 
 overall_sentiment = []
+
 
 # TODO m stands for mode, code breaks if we try to make m not a list for some reason
 m = []
@@ -38,8 +39,7 @@ def results():
     # print state request came from
     print("coming from state" + req.get('state'))
 
-    response = "hello world - dy"
-    #response = "Hmm I see. I know something that might help if you are upset."
+    response = "Hmm I see. I know something that might help if you are upset."
 
     if req.get('state') == 'sentiment_gathering' and len(m) == 0:
 
@@ -76,13 +76,13 @@ def results():
 
             response = "That's great to hear!"
 
-        elif sentiment == 'anger' or sentiment == 'anxiety':
+        elif sentiment == 'anger' or sentiment == 'fear':
 
             # transition to breathing state
             req['state'] = "breathing"
             response = " This is a breathing exercise"
 
-        elif sentiment == 'disgust' or sentiment == 'sadness':
+        elif sentiment == 'sadness':
 
             # transition to mindfulness exercise
             req['state'] = 'mindfulness'
@@ -90,20 +90,12 @@ def results():
         else:
 
             # I don't know what to say when given neutral response
-            response = "I see. Tell me more about what's going on"
+            response = "How do you feel specifically about that?"
 
             m.append(1)
 
         # set mode
         m.pop()
-
-    elif req.get('state') == 'introduction':
-
-        response = '''My name is Al-i, and I am just that,
-        your ally! My purpose is to be here for you without judgement.
-        I've been trained to identify exactly how you're feeling, and to
-        provide for you, and guide you through, a select set of targeted
-        exercises to better equip you for the challenges life brings. Go ahead and tell me how you are feeling!'''
 
     # MINDFULNESS EXERCISE
     elif req.get('state') == 'mindfulness':
@@ -113,7 +105,7 @@ def results():
         about the environment around you? Describe it in depth, even as far as telling me \
         the colors of the walls, and the physical sensations that you're feeling in the moment.'''
 
-    elif req.get('state') == 'mindfulness_followup1' and not neutral_tone_mindfulness[0]:
+    elif req.get('state') == 'mindfulness':
         response, neutral_tone_mindfulness[0] = mindfulness_followup1(req)
 
     elif req.get('state') == 'mindfulness_followup2' and not neutral_tone_mindfulness[0]:
@@ -128,8 +120,12 @@ def results():
 
     req['slots']['_TEST_']['values'].append({"tokens": "test", "resolved": 1, "value": response})
 
-
+    
     print(req)
+
+    info = get_complex_tone(utterance)
+    print(info)
+
     print("webhook successful")
 
     return req
