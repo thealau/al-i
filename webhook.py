@@ -1,6 +1,7 @@
 import json
 import flask
 from mindfulness import mindfulness_followup1, mindfulness_followup2, mindfulness_followup3
+from student_issue import student_issue_followup1, student_issue_followup2, student_issue_followup3
 from get_tone import get_tone, get_complex_tone
 
 app = flask.Flask(__name__)
@@ -112,6 +113,15 @@ def results():
     elif req.get('state') == 'mindfulness_followup3' and not neutral_tone_mindfulness[0]:
         response, neutral_tone_mindfulness[0] = mindfulness_followup3(req)
 
+    elif req.get('state') == 'student_issue' and not req['slots']['_EXAM_']['values']:
+        print("hi")
+        response = student_issue_followup1(req)
+
+    elif req.get('state') == 'student_issue' and not req['slots']['_NAME_']['values']:
+        response = student_issue_followup2(req)
+
+    elif req.get('state') == 'student_issue' and req['slots']['_NAME_']['values']:
+        response = student_issue_followup3(req)
 
     # check state
     req['slots']['_TEST_'] = {"type": "string", "values": []}
