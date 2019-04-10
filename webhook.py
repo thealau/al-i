@@ -113,14 +113,14 @@ def results():
     elif req.get('state') == 'mindfulness_followup3' and not neutral_tone_mindfulness[0]:
         response, neutral_tone_mindfulness[0] = mindfulness_followup3(req)
 
-    elif req.get('state') == 'student_issue' and not req['slots']['_EXAM_']['values']:
+    elif req.get('state') == 'student_issue' and '_EXAM_' in req['slots']:
         print("hi")
         response = student_issue_followup1(req)
 
-    elif req.get('state') == 'student_issue' and not req['slots']['_NAME_']['values']:
+    elif req.get('state') == 'student_issue_study_buddy' and '_STUDENT_NAME_' in req['slots']:
         response = student_issue_followup2(req)
 
-    elif req.get('state') == 'student_issue' and req['slots']['_NAME_']['values']:
+    elif req.get('state') == 'student_issue_study_buddy' and '_STUDENT_NAME_' not in req['slots']:
         response = student_issue_followup3(req)
 
     # check state
