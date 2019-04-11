@@ -120,7 +120,6 @@ def results():
     elif req.get('state') == 'student_issue':
 
         if '_EXAM_' in req['slots']:
-            print("hi")
             req['state'] = 'student_issue_exam'
             response = student_issue_followup1(req)
 
@@ -130,12 +129,14 @@ def results():
         else:
             response = "Classes can definitely be challenging and stressful, but I might have some advice to help out! Is it homework, class concepts, exams, or anything of the like concerning you?"
 
-    elif req.get('state') == 'student_issue_exam' and '_STUDENT_NAME_' in req['slots']:
-        req['state'] = 'student_issue_study_buddy'
+    elif req.get('state') == 'student_issue_exam':
+        print("hi")
+        response = student_issue_followup1(req)
+
+    elif req.get('state') == 'student_issue_study_buddy' and '_STUDENT_NAME_' in req['slots']:
         response = student_issue_followup2(req)
 
-    elif req.get('state') == 'student_issue_exam' and '_STUDENT_NAME_' not in req['slots']:
-        req['state'] = 'student_issue_study_buddy'
+    elif req.get('state') == 'student_issue_study_buddy' and '_STUDENT_NAME_' not in req['slots']:
         response = student_issue_followup3(req)
 
     elif req.get('state') == 'student_issue_homework':
