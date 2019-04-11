@@ -115,12 +115,15 @@ def results():
 
     elif req.get('state') == 'student_issue' and '_EXAM_' in req['slots']:
         print("hi")
+        req['state'] = 'student_issue_exam'
         response = student_issue_followup1(req)
 
-    elif req.get('state') == 'student_issue_study_buddy' and '_STUDENT_NAME_' in req['slots']:
+    elif req.get('state') == 'student_issue_exam' and '_STUDENT_NAME_' in req['slots']:
+        req['state'] = 'student_issue_study_buddy'
         response = student_issue_followup2(req)
 
-    elif req.get('state') == 'student_issue_study_buddy' and '_STUDENT_NAME_' not in req['slots']:
+    elif req.get('state') == 'student_issue_exam' and '_STUDENT_NAME_' not in req['slots']:
+        req['state'] = 'student_issue_study_buddy'
         response = student_issue_followup3(req)
 
     # check state
