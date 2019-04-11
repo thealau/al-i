@@ -130,10 +130,6 @@ def results():
         else:
             response = "Classes can definitely be challenging and stressful, but I might have some advice to help out! Is it homework, class concepts, exams, or anything of the like concerning you?"
 
-    # if _TEST_ is in slots, that means the business logic was triggered again
-    elif req.get('state') == 'student_issue_exam' and '_TEST_' in req['slots']:
-        response = req['slots']['_TEST_']['values'][0]["value"]
-
     elif req.get('state') == 'student_issue_exam' and '_STUDENT_NAME_' in req['slots']:
         req['state'] = 'student_issue_study_buddy'
         response = student_issue_followup2(req)
