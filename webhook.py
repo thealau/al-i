@@ -40,6 +40,10 @@ def results():
 
     response = "Hmm I see. I know something that might help if you are upset."
 
+    # if test is in slots, that means this request came from a business logic transition and response should already be correct
+    if '_TEST_' in req['slots']:
+        return req
+
     if req.get('state') == 'sentiment_gathering' and len(m) == 0:
 
         # get sentiment and record it
@@ -113,10 +117,22 @@ def results():
     elif req.get('state') == 'mindfulness_followup3' and not neutral_tone_mindfulness[0]:
         response, neutral_tone_mindfulness[0] = mindfulness_followup3(req)
 
-    elif req.get('state') == 'student_issue' and '_EXAM_' in req['slots']:
-        print("hi")
-        req['state'] = 'student_issue_exam'
-        response = student_issue_followup1(req)
+    elif req.get('state') == 'student_issue':
+
+        if '_EXAM_' in req['slots']:
+            print("hi")
+            req['state'] = 'student_issue_exam'
+            response = student_issue_followup1(req)
+
+        elif '_HOMEWORK_' in req['slots']:
+            req['state'] = 'student_issue_exam'
+            response = 'success'
+        else:
+            response = "Classes can definitely be challenging and stressful, but I might have some advice to help out! Is it homework, class concepts, exams, or anything of the like concerning you?"
+
+    # if _TEST_ is in slots, that means the business logic was triggered again
+    elif req.get('state') == 'student_issue_exam' and '_TEST_' in req['slots']:
+        response = req['slots']['_TEST_']['values'][0]["value"]
 
     elif req.get('state') == 'student_issue_exam' and '_STUDENT_NAME_' in req['slots']:
         req['state'] = 'student_issue_study_buddy'
@@ -125,6 +141,10 @@ def results():
     elif req.get('state') == 'student_issue_exam' and '_STUDENT_NAME_' not in req['slots']:
         req['state'] = 'student_issue_study_buddy'
         response = student_issue_followup3(req)
+
+    elif req.get('state') == 'student_issue_homework':
+        response = "success"
+        
 
     # check state
     req['slots']['_TEST_'] = {"type": "string", "values": []}
@@ -135,7 +155,7 @@ def results():
     print(req)
 
     info = get_complex_tone(utterance)
-    print(info)
+    #print(info)
 
     print("webhook successful")
 
