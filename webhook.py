@@ -28,6 +28,7 @@ def results():
     req = flask.request.get_json(force=True)
 
     # print out request
+    print('this is the incoming request')
     print(req)
 
     # print query from request
@@ -36,13 +37,14 @@ def results():
     utterance = req.get('query')
 
     # print state request came from
-    print("coming from state" + req.get('state'))
+    print("coming from state " + req.get('state'))
 
     response = "Hmm I see. I know something that might help if you are upset."
 
     # if test is in slots, that means this request came from a business logic transition and response should already be correct
-    if '_TEST_' in req['slots']:
-        return req
+    #if '_TEST_' in req['slots']:
+    #    print('test detected')
+    #    return req
 
     if req.get('state') == 'sentiment_gathering' and len(m) == 0:
 
@@ -124,7 +126,7 @@ def results():
             response = student_issue_followup1(req)
 
         elif '_HOMEWORK_' in req['slots']:
-            req['state'] = 'student_issue_exam'
+            req['state'] = 'student_issue_homework'
             response = 'success'
         else:
             response = "Classes can definitely be challenging and stressful, but I might have some advice to help out! Is it homework, class concepts, exams, or anything of the like concerning you?"
@@ -149,6 +151,7 @@ def results():
     req['slots']['_TEST_']['values'].append({"tokens": "test", "resolved": 1, "value": response})
 
     
+    print('this is the outgoing req')
     print(req)
 
     info = get_complex_tone(utterance)
