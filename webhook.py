@@ -1,7 +1,7 @@
 import json
 import flask
 from mindfulness import mindfulness_followup1, mindfulness_followup2, mindfulness_followup3
-from student_issue import student_issue_followup1, student_issue_followup2, student_issue_followup3
+from student_issue import student_issue_followup1, student_issue_followup2, student_issue_followup3, student_issue_homework, student_issue_homework_math, student_issue_homework_science, student_issue_homework_eecs, student_issue_homework_webwork, student_issue_unknown
 from get_tone import get_tone, get_complex_tone
 
 app = flask.Flask(__name__)
@@ -35,6 +35,9 @@ def results():
     print("user said " + req.get('query'))
 
     utterance = req.get('query')
+
+    info = get_complex_tone(utterance)
+    print(info)
 
     # print state request came from
     print("coming from state " + req.get('state'))
@@ -126,26 +129,103 @@ def results():
             response = student_issue_followup1(req)
 
         elif '_HOMEWORK_' in req['slots']:
-            req['state'] = 'student_issue_homework'
-            response = 'success'
+            new_state = 'student_issue_homework'
+
+            if req['slots']['_HOMEWORK_']['values'][0]['tokens'] == 'webwork':
+                if '_MATH_' in req['slots']:
+                    response = student_issue_homework_math(req)
+                    new_state = 'student_issue_course'
+
+                elif '_SCIENCE_' in req['slots']:
+                    response = student_issue_homework_science(req)
+                    new_state = 'student_issue_course'
+
+                elif '_EECS_' in req['slots']:
+                    response = student_issue_homework_eecs(req)
+                    new_state = 'student_issue_course'
+
+                else:
+                    response = student_issue_homework_webwork(req)
+
+            else:
+                if '_MATH_' in req['slots']:
+                    response = student_issue_homework_math(req)
+                    new_state = 'student_issue_course'
+
+                elif '_SCIENCE_' in req['slots']:
+                    response = student_issue_homework_science(req)
+                    new_state = 'student_issue_course'
+
+                elif '_EECS_' in req['slots']:
+                    response = student_issue_homework_eecs(req)
+                    new_state = 'student_issue_course'
+                    
+                else:
+                    response = student_issue_homework(req)
+
+            req['state'] = new_state
         else:
-            response = "Classes can definitely be challenging and stressful, but I might have some advice to help out! Is it homework, class concepts, exams, or anything of the like concerning you?"
+            response = "Classes can definitely be challenging and stressful, but I might have some advice to help out! Is it homework, an exam, or anything of the like concerning you?"
 
     elif req.get('state') == 'student_issue_exam':
-        print("hi")
+
         response = student_issue_followup1(req)
 
-    elif req.get('state') == 'student_issue_study_buddy' and '_STUDENT_NAME_' in req['slots']:
-        response = student_issue_followup2(req)
-
-    elif req.get('state') == 'student_issue_study_buddy' and '_STUDENT_NAME_' not in req['slots']:
-        response = student_issue_followup3(req)
+    elif req.get('state') == 'student_issue_study_buddy':
+        if '_STUDENT_NAME_' in req['slots']:
+            response = student_issue_followup2(req)
+        else:
+            response = student_issue_followup3(req)
 
     elif req.get('state') == 'student_issue_homework':
-        response = "success"
-        
+        if req['slots']['_HOMEWORK_']['values'][0]['tokens'] == 'webwork':
+            if '_MATH_' in req['slots']:
+                response = student_issue_homework_math(req)
+                req['state'] = 'student_issue_course'
 
-    # check state
+            elif '_SCIENCE_' in req['slots']:
+                response = student_issue_homework_science(req)
+                req['state'] = 'student_issue_course'
+
+            elif '_EECS_' in req['slots']:
+                response = student_issue_homework_eecs(req)
+                req['state'] = 'student_issue_course'
+
+            else:
+                response = student_issue_homework_webwork(req)
+
+        else:
+            if '_MATH_' in req['slots']:
+                response = student_issue_homework_math(req)
+                req['state'] = 'student_issue_course'
+
+            elif '_SCIENCE_' in req['slots']:
+                response = student_issue_homework_science(req)
+                req['state'] = 'student_issue_course'
+
+            elif '_EECS_' in req['slots']:
+                response = student_issue_homework_eecs(req)
+                req['state'] = 'student_issue_course'
+                
+            else:
+                response = student_issue_homework(req)
+
+    elif req.get('state') == 'student_issue_course':
+        if '_MATH_' in req['slots']:
+            response = student_issue_homework_math(req)
+                
+
+        elif '_SCIENCE_' in req['slots']:
+            response = student_issue_homework_science(req)
+            
+
+        elif '_EECS_' in req['slots']:
+            response = student_issue_homework_eecs(req)
+            
+        else:
+            response = student_issue_unknown(req)
+
+    # Set response
     req['slots']['_TEST_'] = {"type": "string", "values": []}
 
     req['slots']['_TEST_']['values'].append({"tokens": "test", "resolved": 1, "value": response})
@@ -153,13 +233,6 @@ def results():
     
     print('this is the outgoing req')
     print(req)
-
-    info = get_complex_tone(utterance)
-    #print(info)
-
-    print("webhook successful")
-
-
 
     return req
     
