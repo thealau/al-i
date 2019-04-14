@@ -9,4 +9,3 @@ Setting up webhook
     d.flask run --host 0.0.0.0 --port 5000
 3.Setup ngrok server using "ngrok http <port_number>""
 4.In clinc site, navigate to user settings in top right corner, and paste "<ngrok_server_url>/webhook" into webhook url
-

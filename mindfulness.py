@@ -3,7 +3,7 @@ from get_tone import get_tone
 def mindfulness_followup1(req):
 	# text = req.get('queryResult').get('parameters')   
 	# sentiment = get_tone(text['any'])
-	query = req
+	query = req.get('query')
 	# Get overall tone
 	overall_tone, _ = get_tone(query)
 	# If neutral
@@ -37,7 +37,7 @@ def mindfulness_followup1(req):
 
 
 def mindfulness_followup2(req):
-	query = req
+	query = req.get('query')
 	# Get overall tone
 	overall_tone, _ = get_tone(query)
 	# If neutral
