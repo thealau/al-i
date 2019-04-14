@@ -7,13 +7,15 @@ app = flask.Flask(__name__)
 
 overall_sentiment = []
 
-
+_state = ['']
 # TODO m stands for mode, code breaks if we try to make m not a list for some reason
-m = []
-mindfulness_m = []
+m = [0]
 
+# mindfulness variables
+_mindfulness_m = [0]
 # TODO: change this solution  
-neutral_tone_mindfulness = [False]
+_neutral_tone_mindfulness = [False]
+
 
 # default route
 @app.route('/')
@@ -22,8 +24,8 @@ def index():
 
 # function for responses
 def results():
-    print(neutral_tone_mindfulness)
-    print(overall_sentiment)
+    # print(_neutral_tone_mindfulness)
+    # print(overall_sentiment)
     # build a request object
     req = flask.request.get_json(force=True)
 
@@ -33,15 +35,17 @@ def results():
     # print query from request
     print("user said " + req.get('query'))
 
-
     utterance = req.get('query')
+    if _state[0] == 'mindfulness':
+        req['state'] = 'mindfulness'
 
     # print state request came from
     print("coming from state" + req.get('state'))
 
     response = "Hmm I see. I know something that might help if you are upset."
+    print(m)
 
-    if req.get('state') == 'sentiment_gathering' and len(m) == 0:
+    if req.get('state') == 'sentiment_gathering' and m[0] == 0:
 
         # get sentiment and record it
         sentiment, _ = get_tone(utterance)
@@ -62,14 +66,13 @@ def results():
                 response = '''I'm sorry to hear that. What's been going on?'''
 
         # set mode
-        m.append(1)
+        m[0] = 1
 
-    elif req.get('state') == 'sentiment_gathering' and len(m) == 1:
+    elif req.get('state') == 'sentiment_gathering' and m[0] == 1:
 
         # get sentiment and record it
         sentiment, _ = get_tone(utterance)
         overall_sentiment.append(sentiment)
-
 
         # do action based on sentiment
         if sentiment == 'joy':
@@ -81,43 +84,56 @@ def results():
             # transition to breathing state
             req['state'] = "breathing"
             response = " This is a breathing exercise"
+            m[0] = 0
 
         elif sentiment == 'sadness':
 
             # transition to mindfulness exercise
-            req['state'] = 'mindfulness'
-
+            # **for some reason, setting state in 'req' to mindfulness here messes things up, so weird.
+            _state[0] = 'mindfulness'
+            # req['state'] = 'mindfulness'
+            response = "Hmm I see. I know something that might help if you are upset. It's a mindfulness exercise"
+            m[0] = 0
         else:
 
             # I don't know what to say when given neutral response
             response = "How do you feel specifically about that?"
 
-            m.append(1)
+            m[0] = 1
 
         # set mode
-        m.pop()
+        # m.pop()
 
     # MINDFULNESS EXERCISE
-    elif req.get('state') == 'mindfulness':
+    elif req.get('state') == 'mindfulness' and _mindfulness_m[0] == 0:
         response = '''Let's try an observation exercise. It can be hard to be present in the moment, \
         especially when we're feeling anxious or overwhelmed with emotions. Let's try and get \
         back to the present and tackle the issues causing our anxiety later. Can you tell me \
         about the environment around you? Describe it in depth, even as far as telling me \
         the colors of the walls, and the physical sensations that you're feeling in the moment.'''
+        _mindfulness_m[0] = 1
 
-    elif req.get('state') == 'mindfulness':
-        response, neutral_tone_mindfulness[0] = mindfulness_followup1(req)
+    elif req.get('state') == 'mindfulness' and _mindfulness_m[0] == 1:
+        response, _neutral_tone_mindfulness[0] = mindfulness_followup1(req)
+        if _neutral_tone_mindfulness[0] is False:
+            _mindfulness_m[0] = 2
+        else:
+            _mindfulness_m[0] = 3
 
-    elif req.get('state') == 'mindfulness_followup2' and not neutral_tone_mindfulness[0]:
-        response, neutral_tone_mindfulness[0] = mindfulness_followup2(req)
+    elif req.get('state') == 'mindfulness_followup2' and _mindfulness_m[0] == 2:
+        response, _neutral_tone_mindfulness[0] = mindfulness_followup2(req)
+        if _neutral_tone_mindfulness[0] is False:
+            _mindfulness_m[0] = 3
 
-    elif req.get('state') == 'mindfulness_followup3' and not neutral_tone_mindfulness[0]:
-        response, neutral_tone_mindfulness[0] = mindfulness_followup3(req)
+    elif req.get('state') == 'mindfulness_followup3' and _mindfulness_m[0] == 3:
+        response, _neutral_tone_mindfulness[0] = mindfulness_followup3(req)
+        # Set mode back to 0 after end of mindfulness exercise
+        _mindfulness_m[0] = 0
 
 
     # check state
     req['slots']['_TEST_'] = {"type": "string", "values": []}
-
+    req['query'] = response
     req['slots']['_TEST_']['values'].append({"tokens": "test", "resolved": 1, "value": response})
 
     
