@@ -33,6 +33,7 @@ def send_message(recipient_id, response):
 
 @app.route('/', methods=['GET', 'POST'])
 def receive_message():
+    # Receive Verification token from facebook
     if request.method == 'GET':
         # Before allowing people to message your bot, Facebook has implemented a verify token
         # that confirms all requests that your bot receives came from Facebook. 
@@ -42,8 +43,10 @@ def receive_message():
     else:
         # get whatever message a user sent the bot
         output = request.get_json()
+        print(output)
         for event in output['entry']:
             messaging = event['messaging']
+            # print(messaging)
             for message in messaging:
                 if message.get('message'):
                     #Facebook Messenger ID for user so we know where to send response back to
@@ -58,5 +61,5 @@ def receive_message():
     return "Message Processed"
 
 
-if __name__ == '__main__':
-    app.run()
+# if __name__ == '__main__':
+#     app.run(ssl_context='adhoc')
