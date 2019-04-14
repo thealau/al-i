@@ -1,7 +1,7 @@
 import json
 import flask
 from mindfulness import mindfulness_followup1, mindfulness_followup2, mindfulness_followup3
-from student_issue import student_issue_followup1, student_issue_followup2, student_issue_followup3, student_issue_homework, student_issue_homework_math, student_issue_homework_science, student_issue_homework_eecs, student_issue_homework_webwork, student_issue_unknown
+from student_issue import student_issue_followup1, student_issue_followup2, student_issue_followup3, student_issue_homework, student_issue_homework_math, student_issue_homework_science, student_issue_homework_eecs, student_issue_homework_webwork, student_issue_unknown, student_issue_homework_fear
 from get_tone import get_tone, get_complex_tone
 
 app = flask.Flask(__name__)
@@ -113,15 +113,6 @@ def results():
         about the environment around you? Describe it in depth, even as far as telling me \
         the colors of the walls, and the physical sensations that you're feeling in the moment.'''
 
-    elif req.get('state') == 'mindfulness':
-        response, neutral_tone_mindfulness[0] = mindfulness_followup1(req)
-
-    elif req.get('state') == 'mindfulness_followup2' and not neutral_tone_mindfulness[0]:
-        response, neutral_tone_mindfulness[0] = mindfulness_followup2(req)
-
-    elif req.get('state') == 'mindfulness_followup3' and not neutral_tone_mindfulness[0]:
-        response, neutral_tone_mindfulness[0] = mindfulness_followup3(req)
-
     elif req.get('state') == 'student_issue':
 
         if '_EXAM_' in req['slots']:
@@ -130,8 +121,10 @@ def results():
 
         elif '_HOMEWORK_' in req['slots']:
             new_state = 'student_issue_homework'
+            if 'fear' in info:
+                response = student_issue_homework_fear(req)
 
-            if req['slots']['_HOMEWORK_']['values'][0]['tokens'] == 'webwork':
+            elif req['slots']['_HOMEWORK_']['values'][0]['tokens'] == 'webwork':
                 if '_MATH_' in req['slots']:
                     response = student_issue_homework_math(req)
                     new_state = 'student_issue_course'
@@ -178,7 +171,9 @@ def results():
             response = student_issue_followup3(req)
 
     elif req.get('state') == 'student_issue_homework':
-        if req['slots']['_HOMEWORK_']['values'][0]['tokens'] == 'webwork':
+        if 'fear' in info:
+            response = student_issue_homework_fear(req)
+        elif req['slots']['_HOMEWORK_']['values'][0]['tokens'] == 'webwork':
             if '_MATH_' in req['slots']:
                 response = student_issue_homework_math(req)
                 req['state'] = 'student_issue_course'
