@@ -1,7 +1,8 @@
 import json
 import flask
 from mindfulness import mindfulness_followup1, mindfulness_followup2, mindfulness_followup3
-from student_issue import student_issue_followup1, student_issue_followup2, student_issue_followup3, student_issue_homework, student_issue_homework_math, student_issue_homework_science, student_issue_homework_eecs, student_issue_homework_webwork, student_issue_unknown, student_issue_homework_fear
+from student_issue import student_issue_followup1, student_issue_followup2, student_issue_followup3, student_issue_homework, student_issue_homework_math, student_issue_homework_science, student_issue_homework_eecs, student_issue_homework_webwork, student_issue_unknown, student_issue_homework_fear, student_issue_grades
+from panic_advice import *
 from get_tone import get_tone, get_complex_tone
 
 app = flask.Flask(__name__)
@@ -113,6 +114,9 @@ def results():
         about the environment around you? Describe it in depth, even as far as telling me \
         the colors of the walls, and the physical sensations that you're feeling in the moment.'''
 
+    elif req.get('state') == 'panic_affirm':
+        response = handle_panic_advice(req)
+
     elif req.get('state') == 'student_issue':
 
         if '_EXAM_' in req['slots']:
@@ -163,7 +167,7 @@ def results():
             response = student_issue_grades(req)
 
         else:
-            response = "Classes can definitely be challenging and stressful, but I might have some advice to help out! Is it homework, an exam, or anything of the like concerning you?"
+            response = "Classes can definitely be challenging and stressful, but I might have some advice to help out! Is it homework, an exam, grades, or anything of the like concerning you?"
 
     elif req.get('state') == 'student_issue_exam':
 
@@ -232,7 +236,6 @@ def results():
     req['slots']['_TEST_'] = {"type": "string", "values": []}
 
     req['slots']['_TEST_']['values'].append({"tokens": "test", "resolved": 1, "value": response})
-
     
     print('this is the outgoing req')
     print(req)
