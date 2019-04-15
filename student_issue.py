@@ -10,7 +10,7 @@ def student_issue_followup3(req):
 	output = '''If you are having difficulty studying by yourself, may I suggest reaching out to someone in your class? You may find that people are willing to help you and it will be easier to share the stress with someone else. If you are uncomfortable studying with someone else, then perhaps you can set a more reasonable studying schedule, such as studying for 50 minutes and taking a 10 minute break by walking outside.'''
 	return output
 
-def student_issue_homework_worried(req):
+def student_issue_homework_fear(req):
 	output = '''Remember that the goal of homework is to only help you build foundations. Not being able to complete it will not be the end of the world! What course is this assignment for?'''
 	return output
 
