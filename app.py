@@ -4,7 +4,7 @@ from pymessenger.bot import Bot
 
 
 app = Flask(__name__)
-ACCESS_TOKEN = 'EAAfxh9KdiwoBAJS24o5iyveEHsMdEqJjLsAZCHqdCRYnlrpqRlVJiJnXXZCtJtZCb9zKZCNuNYfIRIOJeCgUUuStnyvw3nbGbHYkvgygmPZAtAYFfWZCyAvYy0mFVqgCAHcjCQm3PVAD44LAeMIvNZCw8dphwYc17bnRoFGPstJlmhWP78jbazH'
+ACCESS_TOKEN = 'EAAfxh9KdiwoBAGXge1UL7yCNW8p02w1eglDBciLZCE57oG7pTc9A2Umx4ZAO4jkMpTrCOBDW6HbY21oYNba28KmN1pIjaP3m6jKgFlaLhJaTRJ0QG2eJfZCyhMPjJRWwo4LoyGFASn7XKEZChSRRAxpbS2W28pU5SvSkhYnNlQZDZD'
 VERIFY_TOKEN = '5941526563'
 bot = Bot(ACCESS_TOKEN)
 
@@ -15,8 +15,8 @@ _m = [0]
 
 
 def verify_fb_token(token_sent):
-    #take token sent by facebook and verify it matches the verify token you sent
-    #if they match, allow the request, else return an error 
+    # take token sent by facebook and verify it matches the verify token you sent
+    # if they match, allow the request, else return an error 
     # print(token_sent)
     if token_sent == VERIFY_TOKEN:
         return request.args.get("hub.challenge")
@@ -61,7 +61,7 @@ def receive_message():
                     # If user passes in text
                     if message['message'].get('text'):
                         # response_sent_text = get_message()
-                        response_sent_text = get_results(message['message'].get('text'))
+                        response_sent_text = get_results(message)
                         send_message(recipient_id, response_sent_text)
                     #if user sends us a GIF, photo,video, or any other non-text item
                     if message['message'].get('attachments'):
@@ -76,20 +76,20 @@ def get_results(user_text):
     utterance = ''
 
     if user_text['message'].get('text'):
-        utterance = message['message'].get('text')
+        utterance = user_text['message'].get('text')
 
-    info = get_complex_tone(utterance)
-    print(info)
+    # info = get_complex_tone(utterance)
+    # print(info)
 
     response = "Hmm I see. I know something that might help if you are upset."
-    print(m)
+    print(_m)
 
     # if test is in slots, that means this request came from a business logic transition and response should already be correct
     #if '_TEST_' in req['slots']:
     #    print('test detected')
     #    return req
 
-    if req.get('state') == 'sentiment_gathering' and len(m) == 0:
+    if req.get('state') == 'sentiment_gathering' and len(_m) == 0:
 
         # get sentiment and record it
         sentiment, _ = get_tone(utterance)
