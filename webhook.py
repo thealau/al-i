@@ -164,6 +164,11 @@ def results():
                     response = student_issue_homework(req)
 
             req['state'] = new_state
+
+        elif '_GRADES_' in req['slots']:
+            req['state'] = 'student_issue_grades'
+            response = student_issue_grades(req)
+
         else:
             response = "Classes can definitely be challenging and stressful, but I might have some advice to help out! Is it homework, an exam, or anything of the like concerning you?"
 
@@ -224,6 +229,9 @@ def results():
             
         else:
             response = student_issue_unknown(req)
+
+    elif req.get('state') == "student_issue_grades":
+        response = student_issue_grades(req)
 
     # Set response
     req['slots']['_TEST_'] = {"type": "string", "values": []}

@@ -34,6 +34,10 @@ def student_issue_homework_eecs(req):
 	output = '''Computer science coursework can definitely be challenging, but there are many helpful intructor aids holding office hours that are a great resource'''
 	return output
 
+def student_issue_grades(req):
+	output = '''Worrying about your grades is completely normal, and most people do it regardless of whether they're doing well. If you're worried that you're not performing as well as you think you can or need to be, consider meeting with the professor or course staff to talk about where you stand and some steps you can take to do better!'''
+	return output
+
 def student_issue_unknown(req):
 	output = '''I'm not familiar with that type of work, but I will say that sometimes the best thing we can do if we are facing a lot of stress is to take a break and walk around.'''
 	return output
