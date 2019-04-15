@@ -114,8 +114,7 @@ def results():
         about the environment around you? Describe it in depth, even as far as telling me \
         the colors of the walls, and the physical sensations that you're feeling in the moment.'''
 
-    elif req.get('state') == 'panic_affirm' or req.get('state') == 'give_advice':
-        #TODO: broken here...
+    elif req.get('state') == 'panic_affirm':
         response = handle_panic_advice(req)
 
     elif req.get('state') == 'student_issue':
