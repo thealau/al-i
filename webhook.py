@@ -115,7 +115,6 @@ def results():
         the colors of the walls, and the physical sensations that you're feeling in the moment.'''
 
     elif req.get('state') == 'panic_affirm':
-        req['state'] = 'panic_affirm'
         response = handle_panic_advice(req)
 
     elif req.get('state') == 'student_issue':

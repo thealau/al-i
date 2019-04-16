@@ -11,8 +11,8 @@ def handle_panic_advice(req):
         print(req['slots']['_TRIGGER_'])
         print()
 
-        trigger = req['slots']['_TRIGGER_']
-        trigger_split = trigger[0].split()
+        trigger = req['slots']['_TRIGGER_']['values'][0]['tokens']
+        trigger_split = trigger.split()
         trigger_type = ""
         for word in trigger_split:
             print(word)
@@ -23,7 +23,7 @@ def handle_panic_advice(req):
 
         if '_LOCATION_' in req['slots']:
             print('found location')
-            loc = req['slots']['_LOCATION_'][0]
+            loc = req['slots']['_LOCATION_']['values'][0]['tokens']
             if loc == 'home':
                 if trigger_type == 'health':
                     response = panic_advice_home_health(req)
