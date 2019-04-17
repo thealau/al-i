@@ -62,7 +62,7 @@ def handle_panic_advice(req):
     return response   
 
 def panic_advice_school_fight(req):
-    output = '''Working with other students can be hard. \
+    output = '''Working together with other students can be hard. \
         Many schools have mental health support available should you decide that's necessary. \
         There may also be faculty available if you're having problems working with others students. \
         Be kind to yourself, and make sure you're reaching out for help with friends and students when you need it! \
@@ -79,7 +79,9 @@ def panic_advice_work_fight(req):
     return output
 
 def panic_advice_home_fight(req):
-    output = '''Family problems can be difficult to navigate, especially if they're very personal. \
+    output = '''Fighting with a member of your family can feel devastating. \
+        Give yourself some space from the situation to cool off before talking to the family member you fought with again. \
+        Once you have calmed down, it will be easier to figure out what to do next. \
         How are you feeling now? Are you feeling better, or would you like to talk more?'''
     return output
 
@@ -91,32 +93,36 @@ def panic_advice_school_health(req):
     return output
 
 def panic_advice_work_health(req):
-    output = '''Having a health problem at work can be really scary, but is one of the safer places you can be should something happen. \
-        Make sure you've told someone at work about this health issue if it's recurring, especially if it's actually scaring you. \
-        Having someone to support you can help a lot and take away a little bit of that fear and feeling of helplessness. \
+    output = '''Experiencing health concerns at work can be really stressful, but \
+        there is a very good chance that what you are experiencing is just a physical manifestation of anxiety. \
+        Try to go to a quiet place and take your mind off of what you're feeling. The symptoms will likely go away once you are relaxed. \
+        If you give it some time and you are still worried, let a coworker know what you're experiencing or consider contacting a medical professional. \
         How are you feeling now? Are you feeling better, or would you like to talk more?'''
     return output
 
 def panic_advice_home_health(req):
-    output = '''Having a health problem at home can be really scary, especially if you're alone. \
-        Having someone to support you can help a lot and take away a little bit of that fear and feeling of helplessness. \
-        Make sure you tell someone about this, especially if it's a recurring incident so that you can feel less alone! \
+    output = '''Experiencing health concerns when you are by yourself at home can be really stressful, but \
+        there is a very good chance that what you are experiencing is just a physical manifestation of anxiety. \
+        Try making yourself comfortable and taking your mind off of it, as the symptoms will likely go away once you are relaxed. \
+        If you give it some time and you are still worried, consider contacting a medical professional. \
         How are you feeling now? Are you feeling better, or would you like to talk more?'''
     return output
 
 def panic_advice_health(req):
-    output = '''Having a health problem can be really scary, especially if you're alone. \
-        Having someone to support you can help a lot and take away a little bit of that fear and feeling of helplessness. \
-        Make sure you tell someone about this, especially if it's a recurring incident so that you can feel less alone! \
+    output = '''Strange physical sensations can be really scary, especially if you don't know what's causing them. \
+        The physical symptoms of anxiety can manifest in many different forms, but they rarely indicate a more serious medical condition. \
+        The symptoms that you are feeling now will most likely pass, but if they don't consider contacting a medical professional. \
         How are you feeling now? Are you feeling better, or would you like to talk more?'''
     return output
 
 def panic_advice_fight(req):
-    output = '''Relationships of any sort can be some of the most challenging things we deal with. \
-        It's okay to feel overwhelmed, but make sure you have a support group available to talk to when you're having problems. \
+    output = '''Confrontation can be very jarring and stir up a lot of overwhelming negative feelings. \
+        Give yourself some space from the situation to cool off before talking to the other person again. \
+        Once you have calmed down, it will be easier to figure out what to do next. \
         How are you feeling now? Are you feeling better, or would you like to talk more?'''
     return output
 
 def panic_advice_unknown(req):
-    output = "I'm so sorry to hear that. I've never dealt with that situation, so I don't have any advice. make sure you keep breathing and reach out to someone you know if you need more help!"
+    output = "I'm so sorry to hear that. I've never dealt with that situation, so I don't have any advice. \
+    Maybe you should consider reaching out to someone you trust for advice."
     return output

@@ -1,0 +1,69 @@
+
+    # if test is in slots, that means this request came from a business logic transition and response should already be correct
+    #if '_TEST_' in req['slots']:
+    #    print('test detected')
+    #    return req
+
+    # if req.get('state') == 'sentiment_gathering' and len(m) == 0:
+
+    #     # get sentiment and record it
+    #     sentiment, _ = get_tone(utterance)
+    #     overall_sentiment.append(sentiment)
+
+    #     # do action based on sentiment
+    #     if sentiment == 'joy':
+
+    #         response = '''Of course, let's chat! Tell me, how are you doing today?'''
+
+    #     elif sentiment == 'neutral':
+    #         response = '''I'm all ears. What's been going on?'''
+
+    #     else:
+    #         if "feel" not in utterance:
+    #             response = '''I'm sorry to hear that. How are you feeling right now?'''
+    #         else:
+    #             response = '''I'm sorry to hear that. What's been going on?'''
+
+    #     # set mode
+    #     m.append(1)
+
+    # elif req.get('state') == 'sentiment_gathering' and len(m) == 1:
+
+    #     # get sentiment and record it
+    #     sentiment, _ = get_tone(utterance)
+    #     overall_sentiment.append(sentiment)
+
+
+    #     # do action based on sentiment
+    #     if sentiment == 'joy':
+
+    #         response = "That's great to hear!"
+
+    #     elif sentiment == 'anger' or sentiment == 'fear':
+
+    #         # transition to breathing state
+    #         req['state'] = "breathing"
+    #         response = " This is a breathing exercise"
+
+    #     elif sentiment == 'sadness':
+
+    #         # transition to mindfulness exercise
+    #         req['state'] = 'mindfulness'
+
+    #     else:
+
+    #         # I don't know what to say when given neutral response
+    #         response = "How do you feel specifically about that?"
+
+    #         m.append(1)
+
+    #     # set mode
+    #     m.pop()
+
+    # MINDFULNESS EXERCISE
+    # if req.get('state') == 'mindfulness':
+    #     response = '''Let's try an observation exercise. It can be hard to be present in the moment, \
+    #     especially when we're feeling anxious or overwhelmed with emotions. Let's try and get \
+    #     back to the present and tackle the issues causing our anxiety later. Can you tell me \
+    #     about the environment around you? Describe it in depth, even as far as telling me \
+    #     the colors of the walls, and the physical sensations that you're feeling in the moment.'''
