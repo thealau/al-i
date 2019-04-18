@@ -19,3 +19,5 @@ Implemented using Clinc Developer Platform
 3. Setup ngrok server using "ngrok http <port_number>""
 4. In fb developer site(found in facebook_developer_info.txt), navigate to messenger settings in left side, and paste "<ngrok_server_url>" in webhook section, and VERIFY_TOKEN (5941526563) in app.py 
 5. Go to messenger settings in sidebar, subscribe webhook to page, then get access token and paste into code.  You may need to edit permissions as well (checkbox everything)
+### clinc
+
