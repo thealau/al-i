@@ -6,3 +6,6 @@ https://developers.facebook.com/docs/messenger-platform/reference/send-api
 
 # Quick start (after webhook is configured with messenger for al-i Page)
 https://developers.facebook.com/docs/messenger-platform/getting-started/quick-start
+
+# Build app using python under 60 minutes - USEFUL
+https://www.twilio.com/blog/2017/12/facebook-messenger-bot-python.html
