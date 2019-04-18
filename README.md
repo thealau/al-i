@@ -1,5 +1,17 @@
-# AL-i 
-Implemented using Clinc Developer Platform
+# Al-i through FB messenger (Front-End)  
+Implemented using following resources:
+
+**al-i app in fb developer platform**
+* https://developers.facebook.com/apps/2235890493393674/dashboard/
+
+**User request/response format**
+* https://developers.facebook.com/docs/messenger-platform/reference/send-api
+
+**Quick start (after webhook is configured with messenger for al-i Page)**
+* https://developers.facebook.com/docs/messenger-platform/getting-started/quick-start
+
+**Build app using python under 60 minutes -USEFUL**
+* https://www.twilio.com/blog/2017/12/facebook-messenger-bot-python.html
 
 ## Tasks
 * Need to submit app for review before code works for public https://github.com/Microsoft/BotBuilder/issues/1465
