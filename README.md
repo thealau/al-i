@@ -2,7 +2,7 @@
 Implemented using following resources:
 
 **al-i app in fb developer platform**
-* https://developers.facebook.com/apps/2235890493393674/dashboard/
+* https://developers.facebook.com/apps/2478014565544261/dashboard/
 
 **User request/response format**
 * https://developers.facebook.com/docs/messenger-platform/reference/send-api
