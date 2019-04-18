@@ -12,7 +12,7 @@ Implemented using Clinc Developer Platform
 ### fb_messenger_app
 1. Activate virtual environment 
 2. Setup flask server using following commands:
-    1. pip install -r requirements.txt
+    1. **Make sure flask and pymessenger are installed**
     2. export FLASK_DEBUG=True
     3. export FLASK_APP=app
     4. flask run --host 0.0.0.0 --port 5000
