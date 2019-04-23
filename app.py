@@ -7,9 +7,11 @@ import requests
 import json
 
 app = Flask(__name__)
-ACCESS_TOKEN = 'EAAjNvbntcUUBAKZCfSRUvF4APGwtZAf1vDZBKPRNvOyoTvGC1ALsswHX8kBLquNdVZBUWBwvlCbetvZCKdLEiZAo9zwSYEpQ4dZCpwfwb71HDEBAeYNNLrS7Qw62YpUyQp44aq30CFeoqWtQ9eF8YUZAqumIgdsrUfeQVZANvjIP0lDZAzXpkq8B3W'
+ACCESS_TOKEN = 'EAAjNvbntcUUBAMZCbUeOR5ZBRSr0BgluTKi3ciP7cfeyXNISPW5g2OnR2yJxGpzuOdpPPjheqUggCgGqcs3l03foSne1BJtzReMdbnP9cXIUgXK6B3bezcIvqr9ipYmEt1IwlaQ59jjiHVdwI6yscE80904HCnIAEWIpFxXgZDZD'
 VERIFY_TOKEN = '5941526563'
 bot = Bot(ACCESS_TOKEN)
+# this is a weak solution lmao, better to store it in a database (recommended by clinc employee) in case fb_messenger webhook crashes 
+_sender_id_to_dialog_token = {}
 
 
 def verify_fb_token(token_sent):
@@ -47,8 +49,10 @@ def receive_message():
         # get whatever message a user sent the bot
         _oauth_response = get_clinc_oauth()
         _clinc_access_token = _oauth_response['access_token']
+        # print('hi')
         output = request.get_json()
         # print('obtained clinc query')
+        # print(output)
         for event in output['entry']:
             # print(event)
             messaging = event['messaging']
@@ -56,19 +60,23 @@ def receive_message():
             for message in messaging:
                 # print(message)
                 if message.get('message'):
-                    #Facebook Messenger ID for user so we know where to send response back to
+                    #Facebook Messenger ID for user so we know wherae to send response back to
                     recipient_id = message['sender']['id']
+                    # If this is the first message sent by the user
+                    if recipient_id not in _sender_id_to_dialog_token.keys():
+                        _sender_id_to_dialog_token[recipient_id] = ''
+
                     if message['message'].get('text'):
                         user_query = message['message'].get('text')
                         print(user_query)
-                        response_sent_text = send_clinc_query(_clinc_access_token, user_query)
+                        response_sent_text = send_clinc_query(_clinc_access_token, user_query, recipient_id)
                         # response_sent_text = get_message()
                         send_message(recipient_id, response_sent_text)
                     #if user sends us a GIF, photo,video, or any other non-text item
                     if message['message'].get('attachments'):
                         user_query = message['message'].get('attachments')
                         print(user_query)
-                        response_sent_nontext = send_clinc_query(_clinc_access_token, user_query)
+                        response_sent_nontext = send_clinc_query(_clinc_access_token, user_query, recipient_id)
                         # response_sent_nontext = get_message()
                         send_message(recipient_id, response_sent_nontext)
     return "Message Processed"
@@ -87,19 +95,22 @@ def get_clinc_oauth():
     response_dict = json.loads(response.text)
     # print(response_dict)
     # print(type(response_dict))
-    print('obtained clinc oauth, yay')
+    # print('obtained clinc oauth, yay')
     return response_dict
 
 
-def send_clinc_query(access_token, user_query):
+def send_clinc_query(access_token, user_query, recipient_id):
+    print('sender ' + recipient_id + ' is requesting from clinc webhook')
+    print('Current dialog token for this user is: ' + _sender_id_to_dialog_token[recipient_id])
     url = 'https://eecs498.clinc.ai/v1/query'
+    # store recipient id in clinc webhook app, so we know which state the user is in when this message is sent
     payload = {
           'query': user_query,
           'lat': 0,
           'lon': 0,
           'device': 'Chrome/53.0.2785.116',
           'time_offset': 0,
-          'dialog': '',
+          'dialog': _sender_id_to_dialog_token[recipient_id],
           'ai_version': '6c01b865-08df-4e11-bda6-326b75911c67'
     }
     headers = {
@@ -108,12 +119,15 @@ def send_clinc_query(access_token, user_query):
     }
     response = requests.request('POST', url, headers=headers,
                                  data=json.dumps(payload), allow_redirects=False)
-    print("Got this response from clinc")
-    print(response.text)
+    # print("Got this response from clinc")
+    # print(response.text)
 
     response_dict = json.loads(response.text)
+    # store dialog token for this fb user
+    _sender_id_to_dialog_token[recipient_id] = response_dict['dialog']
+    print('Got this dialog token from clinc: ' + response_dict['dialog'])
     response_query = response_dict['visuals']['formattedResponse']
-    # print(response_query)
+    print("Got this response from clinc: " + response_query)
     return response_query
 
 
