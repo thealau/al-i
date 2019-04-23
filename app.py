@@ -46,6 +46,7 @@ def receive_message():
         return verify_fb_token(token_sent)
     #if the request was not get, it must be POST and we can just proceed with sending a message back to user
     else:
+        # return 'hello'
         # get whatever message a user sent the bot
         _oauth_response = get_clinc_oauth()
         _clinc_access_token = _oauth_response['access_token']
@@ -120,12 +121,13 @@ def send_clinc_query(access_token, user_query, recipient_id):
     response = requests.request('POST', url, headers=headers,
                                  data=json.dumps(payload), allow_redirects=False)
     # print("Got this response from clinc")
-    # print(response.text)
+    print(response.text)
 
     response_dict = json.loads(response.text)
     # store dialog token for this fb user
-    _sender_id_to_dialog_token[recipient_id] = response_dict['dialog']
-    print('Got this dialog token from clinc: ' + response_dict['dialog'])
+    if 'dialog' in response_dict.keys():
+        _sender_id_to_dialog_token[recipient_id] = response_dict['dialog']
+        print('Got this dialog token from clinc: ' + response_dict['dialog'])
     response_query = response_dict['visuals']['formattedResponse']
     print("Got this response from clinc: " + response_query)
     return response_query
